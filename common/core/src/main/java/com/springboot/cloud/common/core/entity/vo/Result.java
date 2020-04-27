@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.springboot.cloud.common.core.exception.BaseException;
 import com.springboot.cloud.common.core.exception.ErrorType;
+import com.springboot.cloud.common.core.exception.SystemErrorType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -23,13 +24,13 @@ public class Result<T> {
     @ApiModelProperty(value = "处理结果描述信息")
     private String mesg;
     @ApiModelProperty(value = "请求结果生成时间戳")
-    private Instant timestamp;
+    private Instant time;
     @ApiModelProperty(value = "处理结果数据信息")
     @JsonInclude(JsonInclude.Include.NON_NULL)
     private T data;
 
     public Result() {
-        this.timestamp = ZonedDateTime.now().toInstant();
+        this.time = ZonedDateTime.now().toInstant();
     }
 
     /**
@@ -38,7 +39,7 @@ public class Result<T> {
     public Result(ErrorType errorType) {
         this.code = errorType.getCode();
         this.mesg = errorType.getMesg();
-        this.timestamp = ZonedDateTime.now().toInstant();
+        this.time = ZonedDateTime.now().toInstant();
     }
 
     /**
@@ -61,7 +62,7 @@ public class Result<T> {
         this.code = code;
         this.mesg = mesg;
         this.data = data;
-        this.timestamp = ZonedDateTime.now().toInstant();
+        this.time = ZonedDateTime.now().toInstant();
     }
 
     /**
@@ -89,7 +90,7 @@ public class Result<T> {
      * @return Result
      */
     public static Result fail() {
-        return new Result(ErrorType.SYSTEM_ERROR);
+        return new Result(SystemErrorType.SYSTEM_ERROR);
     }
 
     /**
@@ -140,7 +141,7 @@ public class Result<T> {
      * @return Result
      */
     public static Result fail(Object data) {
-        return new Result<>(ErrorType.SYSTEM_ERROR, data);
+        return new Result<>(SystemErrorType.SYSTEM_ERROR, data);
     }
 
 

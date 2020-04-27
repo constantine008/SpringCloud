@@ -19,9 +19,6 @@
 
     <modules>
         <module>admin</module>
-        <module>hystrix-dashboard</module>
-        <module>turbine</module>
-        <module>zipkin</module>
     </modules>
 
     <dependencies>

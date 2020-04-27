@@ -1,7 +1,10 @@
 package com.springboot.cloud.gateway.exception;
 
 import com.springboot.cloud.common.core.entity.vo.Result;
-import com.springboot.cloud.common.core.exception.ErrorType;
+import com.springboot.cloud.common.core.exception.SystemErrorType;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureException;
 import io.netty.channel.ConnectTimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.support.NotFoundException;
@@ -18,20 +21,41 @@ public class GateWayExceptionHandlerAdvice {
     @ExceptionHandler(value = {ResponseStatusException.class})
     public Result handle(ResponseStatusException ex) {
         log.error("response status exception:{}", ex.getMessage());
-        return Result.fail(ErrorType.GATEWAY_ERROR);
+        return Result.fail(SystemErrorType.GATEWAY_ERROR);
     }
 
     @ExceptionHandler(value = {ConnectTimeoutException.class})
     public Result handle(ConnectTimeoutException ex) {
         log.error("connect timeout exception:{}", ex.getMessage());
-        return Result.fail(ErrorType.GATEWAY_CONNECT_TIME_OUT);
+        return Result.fail(SystemErrorType.GATEWAY_CONNECT_TIME_OUT);
     }
 
     @ExceptionHandler(value = {NotFoundException.class})
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Result handle(NotFoundException ex) {
         log.error("not found exception:{}", ex.getMessage());
-        return Result.fail(ErrorType.GATEWAY_NOT_FOUND_SERVICE);
+        return Result.fail(SystemErrorType.GATEWAY_NOT_FOUND_SERVICE);
+    }
+
+    @ExceptionHandler(value = {ExpiredJwtException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Result handle(ExpiredJwtException ex) {
+        log.error("ExpiredJwtException:{}", ex.getMessage());
+        return Result.fail(SystemErrorType.INVALID_TOKEN);
+    }
+
+    @ExceptionHandler(value = {SignatureException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Result handle(SignatureException ex) {
+        log.error("SignatureException:{}", ex.getMessage());
+        return Result.fail(SystemErrorType.INVALID_TOKEN);
+    }
+
+    @ExceptionHandler(value = {MalformedJwtException.class})
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public Result handle(MalformedJwtException ex) {
+        log.error("MalformedJwtException:{}", ex.getMessage());
+        return Result.fail(SystemErrorType.INVALID_TOKEN);
     }
 
     @ExceptionHandler(value = {RuntimeException.class})
